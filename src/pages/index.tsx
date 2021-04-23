@@ -1,5 +1,19 @@
-export default function Home() {
+export default function Home(props) {
+  console.log("props", props);
+
   return (
-    <h1>Hello World</h1>
+    <></>
   )
+}
+
+export const getStaticProps = async () => {
+  const response = await fetch('http://0.0.0.0:3333/episodes')
+  const data = await response.json();
+
+  return {
+    props: {
+      episodes: data
+    },
+    revalidate: 60 * 60 * 8,
+  }
 }
