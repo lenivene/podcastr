@@ -1,11 +1,13 @@
-import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from 'next/router';
+import { GetStaticPaths, GetStaticProps } from "next"
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { api } from "../../services/api"
 import { convertDurationTimeToString } from "../../utils/convertDurationTimeToString";
 import styles from "../../styles/pages/episodes.module.scss";
-import Link from "next/link";
+import { usePlayer } from "../../contexts/PlayerContext";
 
 type EpisodesType = {
   id: string,
@@ -25,7 +27,12 @@ type EpisodeProps = {
 
 
 export default function Episode({ episode }: EpisodeProps){
-  console.log("episode", episode);
+  const { play } = usePlayer()
+  const router = useRouter()
+
+  if (router.isFallback) {
+    return <p>Carregando...</p>
+  }
 
   return (
     <div className={styles.episodesPage}>
@@ -41,7 +48,10 @@ export default function Episode({ episode }: EpisodeProps){
           src={episode.thumbnail}
           objectFit="cover"
         />
-        <button type="button">
+        <button
+          type="button"
+          onClick={() => play(episode)}
+        >
           <img src="/play.svg" alt="Tocar episódio"/>
         </button>
       </div>
@@ -61,8 +71,26 @@ export default function Episode({ episode }: EpisodeProps){
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const response = await api.get("/episodes", {
+    params: {
+      _limit: 2,
+      _sort: 'published_at',
+      _order: 'desc'
+    }
+  });
+
+  const data = response.data;
+
+  const paths = data.map(episode => {
+    return {
+      params: {
+        slug: episode.id
+      }
+    }
+  })
+
   return {
-    paths: [],
+    paths,
     fallback: 'blocking'
   }
 }

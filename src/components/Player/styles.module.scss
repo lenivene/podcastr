@@ -23,6 +23,28 @@
     font-weight: 600;
   }
 
+  .currentEpisode {
+    text-align: center;
+  
+    img {
+      border-radius: 1.5rem;
+    }
+  
+    strong {
+      display: block;
+      margin-top: 2rem;
+      font: 600 1.25rem Lexand, sans-serif;
+      line-height: 1.75rem;
+    }
+  
+    span {
+      display: block;
+      margin-top: 1rem;
+      opacity: 0.6;
+      line-height: 1.5rem;
+    }
+  }
+
   .emptyPlayer{
     background: linear-gradient(143.8deg, rgba(145, 100, 250, .8) 0%, rgba(0, 0, 0, 0) 100%);
     width: 100%;
